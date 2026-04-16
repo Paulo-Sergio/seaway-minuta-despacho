@@ -1,7 +1,7 @@
 package br.com.minuta.despacho;
 
 import br.com.minuta.despacho.csv.CsvReader;
-import br.com.minuta.despacho.model.DespachoData;
+import br.com.minuta.despacho.model.GolDespachoData;
 import br.com.minuta.despacho.pdf.PdfDispatcher;
 import br.com.minuta.despacho.printer.PrinterService;
 
@@ -41,7 +41,7 @@ public class AutomacaoScheduler {
                 for (File csv : csvs) {
                     System.out.println("[PROCESSANDO] " + csv.getName());
 
-                    List<DespachoData> registros = csvReader.lerCsv(csv);
+                    List<GolDespachoData> registros = csvReader.lerCsv(csv);
 
                     if (registros.isEmpty()) {
                         System.out.println("[AVISO] CSV vazio ou sem dados válidos: " + csv.getName());
@@ -50,7 +50,7 @@ public class AutomacaoScheduler {
                     }
 
                     boolean todosOk = true;
-                    for (DespachoData dados : registros) {
+                    for (GolDespachoData dados : registros) {
                         try {
                             System.out.println("[GERANDO PDF] Companhia: " + dados.companhia
                                     + " | Destinatário: " + dados.destinatarioNome);

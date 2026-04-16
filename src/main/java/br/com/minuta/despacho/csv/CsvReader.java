@@ -1,6 +1,6 @@
 package br.com.minuta.despacho.csv;
 
-import br.com.minuta.despacho.model.DespachoData;
+import br.com.minuta.despacho.model.GolDespachoData;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -23,8 +23,8 @@ public class CsvReader {
         return arquivos != null ? Arrays.asList(arquivos) : Collections.emptyList();
     }
 
-    public List<DespachoData> lerCsv(File arquivo) throws IOException {
-        List<DespachoData> lista = new ArrayList<>();
+    public List<GolDespachoData> lerCsv(File arquivo) throws IOException {
+        List<GolDespachoData> lista = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(new FileInputStream(arquivo), StandardCharsets.UTF_8))) {
@@ -33,18 +33,18 @@ public class CsvReader {
             boolean primeiraLinha = true;
 
             while ((linha = br.readLine()) != null) {
-                // Pula cabeçalho
+                // Pula cabeçalho apenas se parecer um cabeçalho de verdade
                 if (primeiraLinha) {
                     primeiraLinha = false;
-                    // Se a primeira linha não começa com GOL ou AZUL, é cabeçalho — pula
                     String upper = linha.toUpperCase();
-                    if (!upper.startsWith("GOL") && !upper.startsWith("AZUL")) continue;
+                    if (upper.contains("TIPO DE ENTREGA") || upper.contains("RAZÃO SOCIAL")) continue;
                 }
 
                 String[] campos = linha.split(";", -1);
                 if (campos.length < 2) continue; // linha vazia ou inválida
 
-                lista.add(DespachoData.fromCsvLine(campos));
+                // Automação GOL
+                lista.add(GolDespachoData.fromCsvLine(campos));
             }
         }
         return lista;

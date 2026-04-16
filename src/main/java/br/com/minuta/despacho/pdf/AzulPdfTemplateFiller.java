@@ -1,6 +1,6 @@
 package br.com.minuta.despacho.pdf;
 
-import br.com.minuta.despacho.model.DespachoData;
+import br.com.minuta.despacho.model.AzulDespachoData;
 import com.itextpdf.forms.PdfAcroForm;
 import com.itextpdf.forms.fields.PdfFormField;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -14,7 +14,7 @@ public class AzulPdfTemplateFiller {
 
     private static final String TEMPLATE = "/templates/MINUTA_AZUL.pdf";
 
-    public File preencher(DespachoData d, String pastaTemp) throws Exception {
+    public File preencher(AzulDespachoData d, String pastaTemp) throws Exception {
         String saida = pastaTemp + "/AZUL_" + System.currentTimeMillis() + ".pdf";
 
         InputStream tpl  = getClass().getResourceAsStream(TEMPLATE);

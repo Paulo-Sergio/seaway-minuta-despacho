@@ -51,68 +51,68 @@ public class GolPdfFieldGenerator {
         PdfFont helv = PdfFontFactory.createFont(StandardFonts.HELVETICA);
 
         // ── Topo ────────────────────────────────────
-        texto(form, pdf, helv, "Serviço GOLLOG",            20, 561, 120, 15);
-        texto(form, pdf, helv, "Forma de Pagamento",        150, 562, 115, 15);
-        texto(form, pdf, helv, "Tipo de Entrega",           285, 562, 130, 15);
-        texto(form, pdf, helv, "Aeroporto para Retirada",   545, 562, 43, 18);
+        texto(form, pdf, helv, "Serviço GOLLOG",            20, 561, 120, 15, false);
+        texto(form, pdf, helv, "Forma de Pagamento",        150, 562, 115, 15, false);
+        texto(form, pdf, helv, "Tipo de Entrega",           285, 562, 130, 15, false);
+        texto(form, pdf, helv, "Aeroporto para Retirada",   545, 562, 43, 18, false);
 
         // ── REMETENTE (coluna esquerda) ────────────────────────────────────
-        texto(form, pdf, helv, "Remetente", 100, 535, 200, 18);
-        texto(form, pdf, helv, "CPF / CNPJ", 100, 508, 200, 18);
-        texto(form, pdf, helv, "Endereço", 100, 472, 200, 28);
-        texto(form, pdf, helv, "Complemento", 100, 445, 75, 18);
-        texto(form, pdf, helv, "Fone", 225, 445, 75, 18);
-        texto(form, pdf, helv, "Bairro", 55, 418, 150, 18);
-        texto(form, pdf, helv, "UF", 255, 418, 45, 18);
-        texto(form, pdf, helv, "CEP", 55, 392, 65, 18);
-        texto(form, pdf, helv, "Cidade", 170, 392, 130, 18);
-        texto(form, pdf, helv, "e-mail", 65, 370, 230, 16);
+        texto(form, pdf, helv, "Remetente", 100, 535, 200, 18, false);
+        texto(form, pdf, helv, "CPF / CNPJ", 100, 508, 200, 18, false);
+        texto(form, pdf, helv, "Endereço", 100, 472, 200, 28, true);
+        texto(form, pdf, helv, "Complemento", 100, 445, 75, 18, false);
+        texto(form, pdf, helv, "Fone", 225, 445, 75, 18, false);
+        texto(form, pdf, helv, "Bairro", 55, 418, 150, 18, false);
+        texto(form, pdf, helv, "UF", 255, 418, 45, 18, false);
+        texto(form, pdf, helv, "CEP", 55, 392, 65, 18, false);
+        texto(form, pdf, helv, "Cidade", 170, 392, 130, 18, false);
+        texto(form, pdf, helv, "e-mail", 65, 370, 230, 16, false);
 
         // ── DESTINATÁRIO (coluna direita) ──────────────────────────────────
-        texto(form, pdf, helv, "Destinatário",  387, 535, 200, 18);
-        texto(form, pdf, helv, "CPF / CNPJ_2",  387, 508, 200, 18);
-        texto(form, pdf, helv, "Endereço_2",    387, 472, 200, 28);
-        texto(form, pdf, helv, "Complemento_2", 387, 445, 75, 18);
-        texto(form, pdf, helv, "Fone_2",        512, 445, 75, 18);
-        texto(form, pdf, helv, "Bairro_2",      342, 418, 150, 18);
-        texto(form, pdf, helv, "UF_2",          540, 418, 45, 18);
-        texto(form, pdf, helv, "CEP_2",         342, 392, 65, 18);
-        texto(form, pdf, helv, "Cidade_2",      457, 392, 130, 18);
-        texto(form, pdf, helv, "e-mail_2",      352, 370, 230, 18);
+        texto(form, pdf, helv, "Destinatário",  387, 535, 200, 18, false);
+        texto(form, pdf, helv, "CPF / CNPJ_2",  387, 508, 200, 18, false);
+        texto(form, pdf, helv, "Endereço_2",    387, 472, 200, 28, true);
+        texto(form, pdf, helv, "Complemento_2", 387, 445, 75, 18, false);
+        texto(form, pdf, helv, "Fone_2",        512, 445, 75, 18, false);
+        texto(form, pdf, helv, "Bairro_2",      342, 418, 150, 18, false);
+        texto(form, pdf, helv, "UF_2",          540, 418, 45, 18, false);
+        texto(form, pdf, helv, "CEP_2",         342, 392, 65, 18, false);
+        texto(form, pdf, helv, "Cidade_2",      457, 392, 130, 18, false);
+        texto(form, pdf, helv, "e-mail_2",      352, 370, 230, 18, false);
 
         // ── TOMADOR DO FRETE ───────────────────────────────────────────────
-        texto(form, pdf, helv, "Tomador do Frete",  100, 345, 200, 18);
-        texto(form, pdf, helv, "CNPJ",              345, 345, 120, 18);
-        texto(form, pdf, helv, "Nº Conta Gollog",   545, 345, 45, 18);
+        texto(form, pdf, helv, "Tomador do Frete",  100, 345, 200, 18, false);
+        texto(form, pdf, helv, "CNPJ",              345, 345, 120, 18, false);
+        texto(form, pdf, helv, "Nº Conta Gollog",   545, 345, 45, 18, false);
 
         // ── VOLUMES / CARGA ────────────────────────────────────────────────
-        texto(form, pdf, helv, "Nº de Volumes",             109, 305, 53, 22);
-        texto(form, pdf, helv, "Peso Total",                217, 305, 61, 22);
-        texto(form, pdf, helv, "Medidas das Embalagens",    408, 305, 185, 22);
-        texto(form, pdf, helv, "Produto Predominante",      126, 268, 158, 22);
-        texto(form, pdf, helv, "Artigo Perigoso UN",        293, 265, 135, 15);
-        texto(form, pdf, helv, "Tipo de Embalagem",         438, 265, 135, 15);
+        texto(form, pdf, helv, "Nº de Volumes",             109, 305, 53, 22, false);
+        texto(form, pdf, helv, "Peso Total",                217, 305, 61, 22, false);
+        texto(form, pdf, helv, "Medidas das Embalagens",    408, 305, 185, 22, false);
+        texto(form, pdf, helv, "Produto Predominante",      126, 268, 158, 22, false);
+        texto(form, pdf, helv, "Artigo Perigoso UN",        293, 265, 135, 15, false);
+        texto(form, pdf, helv, "Tipo de Embalagem",         438, 265, 135, 15, false);
 
         // ── NOTAS FISCAIS ──────────────────────────────────────────────────
-        texto(form, pdf, helv, "Notas Fiscais", 126, 238, 460, 18);
+        texto(form, pdf, helv, "Notas Fiscais", 126, 238, 460, 18, false);
 
         // ── TIPO DE SEGURO (checkboxes) ────────────────────────────────────
         // Assumindo as posições originais baseadas no modelo (X: Próprio=60, Seguro GOL=140, Sem Seguro=240)
         checkbox(form, pdf, "Próprio",      101, 216, 11, 11);
-        checkbox(form, pdf, "Seguro GOL",   101, 190, 11, 11);
-        checkbox(form, pdf, "Sem Seguro",   101, 167, 11, 11);
+        checkbox(form, pdf, "Seguro GOL",   101, 188, 11, 11);
+        checkbox(form, pdf, "Sem Seguro",   101, 165, 11, 11);
 
         // ── DADOS DE SEGURO ────────────────────────────────────────────────
-        texto(form, pdf, helv, "Nº de Apolice",         296, 212, 87, 18);
-        texto(form, pdf, helv, "Seguradora",            448, 212, 142, 18);
-        texto(form, pdf, helv, "Valor da Mercadoria",   296, 185, 87, 18);
+        texto(form, pdf, helv, "Nº de Apolice",         296, 212, 87, 18, false);
+        texto(form, pdf, helv, "Seguradora",            448, 212, 142, 18, false);
+        texto(form, pdf, helv, "Valor da Mercadoria",   296, 185, 87, 18, false);
 
         // ── AUTORIZACAO ────────────────────────────────────────────────────
         checkbox(form, pdf, "Autorização",      92, 148, 11, 11);
 
         // ── RESPONSÁVEL ────────────────────────────────────────────────────
-        texto(form, pdf, helv, "Local/Data",        127, 122, 210, 18);
-        texto(form, pdf, helv, "Nome/ Reponsável",  451, 122, 135, 18);
+        texto(form, pdf, helv, "Local/Data",        127, 122, 210, 18, false);
+        texto(form, pdf, helv, "Nome/ Reponsável",  451, 122, 135, 18, false);
 
         pdf.close();
         System.out.println("✓ Template GOL com campos gerado em: " + caminhoSaida);
@@ -125,10 +125,13 @@ public class GolPdfFieldGenerator {
      * e o texto fica invisível no PDF final.
      */
     private static void texto(PdfAcroForm form, PdfDocument pdf, PdfFont font,
-                              String nome, float x, float y, float w, float h) {
+                              String nome, float x, float y, float w, float h, boolean multiline) {
         PdfTextFormField campo = PdfFormField.createText(
                 pdf, new Rectangle(x, y, w, h), nome, "");
         campo.setFont(font).setFontSize(FONT_SIZE);
+        if (multiline) {
+            campo.setMultiline(true);
+        }
         form.addField(campo);
     }
 
