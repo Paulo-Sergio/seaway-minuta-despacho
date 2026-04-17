@@ -1,5 +1,8 @@
 package br.com.minuta.despacho.printer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.print.*;
 import javax.print.attribute.*;
 import javax.print.attribute.standard.*;
@@ -8,6 +11,7 @@ import java.nio.file.Files;
 
 public class PrinterService {
 
+    private static final Logger logger = LoggerFactory.getLogger(PrinterService.class);
     private final String nomeDaImpressora;
 
     public PrinterService(String nomeDaImpressora) {
@@ -16,11 +20,11 @@ public class PrinterService {
 
     public static void listarImpressoras() {
         PrintService[] services = PrintServiceLookup.lookupPrintServices(null, null);
-        System.out.println("=== Impressoras disponíveis ===");
+        logger.info("=== Impressoras disponíveis ===");
         for (PrintService ps : services) {
-            System.out.println("  -> " + ps.getName());
+            logger.info("  -> {}", ps.getName());
         }
-        System.out.println("===============================");
+        logger.info("===============================");
     }
 
     public void imprimir(File pdfFile) throws Exception {
@@ -51,7 +55,7 @@ public class PrinterService {
         DocPrintJob job = impressora.createPrintJob();
         job.print(doc, attrs);
 
-        System.out.println("[IMPRESSO] " + pdfFile.getName() + " -> " + impressora.getName());
+        logger.info("[IMPRESSO] {} -> {}", pdfFile.getName(), impressora.getName());
     }
 
     private PrintService encontrarImpressora() {

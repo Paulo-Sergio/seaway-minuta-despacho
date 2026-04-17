@@ -6,12 +6,15 @@ import com.itextpdf.forms.fields.PdfFormField;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.InputStream;
 
 public class AzulPdfTemplateFiller {
 
+    private static final Logger logger = LoggerFactory.getLogger(AzulPdfTemplateFiller.class);
     private static final String TEMPLATE = "/templates/MINUTA_AZUL.pdf";
 
     public File preencher(AzulDespachoData d, String pastaTemp) throws Exception {
@@ -175,10 +178,10 @@ public class AzulPdfTemplateFiller {
             if (field != null) {
                 field.setValue(valor == null ? "" : valor);
             } else {
-                System.out.println("[AVISO] Campo não encontrado: " + campo);
+                logger.warn("Campo não encontrado: {}", campo);
             }
         } catch (Exception e) {
-            System.err.println("[ERRO] Campo '" + campo + "': " + e.getMessage());
+            logger.error("Erro no campo '{}': {}", campo, e.getMessage());
         }
     }
 
@@ -199,8 +202,7 @@ public class AzulPdfTemplateFiller {
                         field.setValue(onValue);
                     }
                 } catch (Exception e) {
-                    System.err.println("[ERRO] Checkbox '" + nomeCampos[i]
-                            + "': " + e.getMessage());
+                    logger.error("Erro no checkbox '{}': {}", nomeCampos[i], e.getMessage());
                 }
                 break;
             }

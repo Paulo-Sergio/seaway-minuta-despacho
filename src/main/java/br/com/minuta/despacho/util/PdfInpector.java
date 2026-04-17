@@ -4,10 +4,14 @@ import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.*;
 import com.itextpdf.forms.PdfAcroForm;
 import com.itextpdf.forms.fields.PdfFormField;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
 public class PdfInpector {
+
+    private static final Logger logger = LoggerFactory.getLogger(PdfInpector.class);
 
     public static void main(String[] args) throws Exception {
         String caminhoPdf = "/templates/MINUTA_AZUL.pdf";
@@ -19,19 +23,18 @@ public class PdfInpector {
         PdfAcroForm form = PdfAcroForm.getAcroForm(pdfDoc, false);
 
         if (form != null && !form.getFormFields().isEmpty()) {
-            System.out.println("=== PDF TEM CAMPOS ACROFORM ===");
+            logger.info("=== PDF TEM CAMPOS ACROFORM ===");
             Map<String, PdfFormField> campos = form.getFormFields();
             for (Map.Entry<String, PdfFormField> entry : campos.entrySet()) {
                 PdfFormField field = entry.getValue();
                 Rectangle rect = field.getWidgets().get(0).getRectangle().toRectangle();
-                System.out.printf("Campo: %-40s | X:%.0f Y:%.0f W:%.0f H:%.0f%n",
+                logger.info("Campo: {:40} | X:{} Y:{} W:{} H:{}",
                         entry.getKey(), rect.getX(), rect.getY(),
                         rect.getWidth(), rect.getHeight());
             }
         } else {
-            System.out.println("=== PDF NÃO TEM ACROFORM — usar coordenadas manuais ===");
-            System.out.println("Tamanho da página: " +
-                    pdfDoc.getFirstPage().getPageSize());
+            logger.info("=== PDF NÃO TEM ACROFORM — usar coordenadas manuais ===");
+            logger.info("Tamanho da página: {}", pdfDoc.getFirstPage().getPageSize());
         }
 
         pdfDoc.close();

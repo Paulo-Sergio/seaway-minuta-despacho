@@ -7,6 +7,8 @@ import com.itextpdf.forms.fields.PdfTextFormField;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.InputStream;
@@ -14,6 +16,7 @@ import java.time.LocalDate;
 
 public class GolPdfTemplateFiller {
 
+    private static final Logger logger = LoggerFactory.getLogger(GolPdfTemplateFiller.class);
     // Use o template com campos já criados
     private static final String TEMPLATE = "/templates/MINUTA_GOL_COM_CAMPOS.pdf";
 
@@ -109,10 +112,10 @@ public class GolPdfTemplateFiller {
             if (field != null) {
                 field.setValue(valor == null ? "" : valor);
             } else {
-                System.out.println("[AVISO] Campo não encontrado: " + campo);
+                logger.warn("Campo não encontrado: {}", campo);
             }
         } catch (Exception e) {
-            System.err.println("[ERRO] Campo '" + campo + "': " + e.getMessage());
+            logger.error("Erro no campo '{}': {}", campo, e.getMessage());
         }
     }
 }

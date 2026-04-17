@@ -4,6 +4,8 @@ import br.com.minuta.despacho.csv.CsvReader;
 import br.com.minuta.despacho.model.GolDespachoData;
 import br.com.minuta.despacho.pdf.PdfDispatcher;
 import br.com.minuta.despacho.printer.PrinterService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 public class AutomacaoScheduler {
 
+    private static final Logger logger = LoggerFactory.getLogger(AutomacaoScheduler.class);
     private final CsvReader csvReader;
     private final PdfDispatcher pdfDispatcher;
     private final PrinterService printerService;
@@ -34,17 +37,17 @@ public class AutomacaoScheduler {
                 List<File> csvs = csvReader.buscarCsvs();
 
                 if (csvs.isEmpty()) {
-                    System.out.println("[AGUARDANDO] Nenhum CSV encontrado na pasta de entrada.");
+                    logger.info("Aguardando: Nenhum CSV encontrado na pasta de entrada.");
                     return;
                 }
 
                 for (File csv : csvs) {
-                    System.out.println("[PROCESSANDO] " + csv.getName());
+                    logger.info("Processando: {}", csv.getName());
 
                     List<GolDespachoData> registros = csvReader.lerCsv(csv);
 
                     if (registros.isEmpty()) {
-                        System.out.println("[AVISO] CSV vazio ou sem dados válidos: " + csv.getName());
+                        logger.warn("CSV vazio ou sem dados válidos: {}", csv.getName());
                         csvReader.moverParaProcessados(csv);
                         continue;
                     }
@@ -52,41 +55,38 @@ public class AutomacaoScheduler {
                     boolean todosOk = true;
                     for (GolDespachoData dados : registros) {
                         try {
-                            System.out.println("[GERANDO PDF] Companhia: " + dados.companhia
-                                    + " | Destinatário: " + dados.destinatarioNome);
+                            logger.info("Gerando PDF - Companhia: {} | Destinatário: {}", 
+                                    dados.companhia, dados.destinatarioNome);
 
                             File pdf = pdfDispatcher.gerar(dados);
                             printerService.imprimir(pdf);
                             pdf.delete();
 
                         } catch (IllegalArgumentException e) {
-                            System.err.println("[ERRO CSV] " + e.getMessage());
+                            logger.error("Erro no CSV: {}", e.getMessage());
                         } catch (Exception e) {
                             todosOk = false;
-                            System.err.println("[ERRO PDF/IMPRESSÃO] " + e.getMessage());
-                            e.printStackTrace();
+                            logger.error("Erro no PDF/Impressão: {}", e.getMessage(), e);
                         }
                     }
 
                     if (todosOk) {
                         csvReader.moverParaProcessados(csv);
-                        System.out.println("[CONCLUÍDO] CSV movido para processados: " + csv.getName());
+                        logger.info("Concluído: CSV movido para processados: {}", csv.getName());
                     } else {
-                        System.err.println("[MANTIDO] CSV permanece na entrada por causa de erros: "
-                                + csv.getName());
+                        logger.error("Mantido: CSV permanece na entrada por causa de erros: {}", csv.getName());
                     }
                 }
 
             } catch (Exception e) {
-                System.err.println("[ERRO GERAL] " + e.getMessage());
-                e.printStackTrace();
+                logger.error("Erro geral: {}", e.getMessage(), e);
             }
 
         }, 0, 30, TimeUnit.SECONDS);
 
-        System.out.println("============================================");
-        System.out.println("  Automação de Despacho iniciada!");
-        System.out.println("  Verificando pasta a cada 30 segundos...");
-        System.out.println("============================================");
+        logger.info("============================================");
+        logger.info("  Automação de Despacho iniciada!");
+        logger.info("  Verificando pasta a cada 30 segundos...");
+        logger.info("============================================");
     }
 }

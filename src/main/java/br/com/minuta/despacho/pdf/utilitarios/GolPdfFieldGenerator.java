@@ -11,6 +11,8 @@ import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 
@@ -29,6 +31,7 @@ import java.io.InputStream;
  */
 public class GolPdfFieldGenerator {
 
+    private static final Logger logger = LoggerFactory.getLogger(GolPdfFieldGenerator.class);
     private static final String TEMPLATE = "/templates/MINUTA_GOL.pdf";
     /**
      * Tamanho de fonte padrão para todos os campos de texto
@@ -115,8 +118,8 @@ public class GolPdfFieldGenerator {
         texto(form, pdf, helv, "Nome/ Reponsável",  451, 122, 135, 18, false);
 
         pdf.close();
-        System.out.println("✓ Template GOL com campos gerado em: " + caminhoSaida);
-        System.out.println("  → Copie o arquivo para: src/main/resources/templates/MINUTA_GOL_COM_CAMPOS.pdf");
+        logger.info("✓ Template GOL com campos gerado em: {}", caminhoSaida);
+        logger.info("  → Copie o arquivo para: src/main/resources/templates/MINUTA_GOL_COM_CAMPOS.pdf");
     }
 
     /**

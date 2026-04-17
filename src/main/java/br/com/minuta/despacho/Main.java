@@ -1,10 +1,14 @@
 package br.com.minuta.despacho;
 
 import br.com.minuta.despacho.printer.PrinterService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
 public class Main {
+
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     // ============================================================
     //  CONFIGURAÇÕES — ajuste para o seu ambiente
@@ -23,7 +27,7 @@ public class Main {
         criarPastas();
 
         // Passo 2: lista as impressoras disponíveis para você copiar o nome correto acima
-        System.out.println("\n[DICA] Impressoras disponíveis nesta máquina:");
+        logger.info("Impressoras disponíveis nesta máquina:");
         PrinterService.listarImpressoras();
 
         // Passo 3: inicia a automação
@@ -38,7 +42,7 @@ public class Main {
 
         // Mantém a JVM viva indefinidamente
         Runtime.getRuntime().addShutdownHook(new Thread(() ->
-                System.out.println("\n[ENCERRADO] Automação de despacho finalizada.")
+                logger.info("Automação de despacho finalizada.")
         ));
     }
 
@@ -46,6 +50,6 @@ public class Main {
         new File(PASTA_ENTRADA).mkdirs();
         new File(PASTA_PROCESSADOS).mkdirs();
         new File(PASTA_TEMP).mkdirs();
-        System.out.println("[OK] Pastas verificadas/criadas.");
+        logger.info("Pastas verificadas/criadas.");
     }
 }
