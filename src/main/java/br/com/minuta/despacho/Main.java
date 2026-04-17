@@ -5,51 +5,111 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
 
 public class Main {
 
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
-    // ============================================================
-    //  CONFIGURAÇÕES — ajuste para o seu ambiente
-    // ============================================================
-    private static final String PASTA_ENTRADA = "C:/projetos/seaway-minuta-despacho/massa-de-testes/entrada";
-    private static final String PASTA_PROCESSADOS = "C:/projetos/seaway-minuta-despacho/massa-de-testes/processados";
-    private static final String PASTA_TEMP = "C:/projetos/seaway-minuta-despacho/massa-de-testes/temp";
-
-    // Cole aqui o nome EXATO que aparecer ao rodar listarImpressoras()
-    private static final String NOME_IMPRESSORA = "NOME_DA_IMPRESSORA_AQUI";
-    // ============================================================
+    private static List<String> pastasEntrada;
+    private static String pastaProcessados;
+    private static String pastaTemp;
+    private static String nomeImpressora;
 
     public static void main(String[] args) {
+        // Passo 0: carregar propriedades
+        if (!carregarConfiguracoes()) {
+            logger.error("Erro crítico: Não foi possível carregar as configurações.");
+            return;
+        }
 
         // Passo 1: garante que as pastas existem
         criarPastas();
 
-        // Passo 2: lista as impressoras disponíveis para você copiar o nome correto acima
-        logger.info("Impressoras disponíveis nesta máquina:");
-        PrinterService.listarImpressoras();
+        // Passo 2: Validar impressora
+        PrinterService printerService = new PrinterService(nomeImpressora);
+        if (!printerService.existeImpressora()) {
+            logger.error("IMPRESSORA NÃO ENCONTRADA: [{}]", nomeImpressora);
+            logger.error("A automação não será iniciada sem uma impressora válida.");
+            logger.info("Verifique a lista de impressoras disponíveis abaixo e ajuste o config.properties:");
+            PrinterService.listarImpressoras();
+            return;
+        }
+
+        logger.info("Impressora selecionada: [{}]", nomeImpressora);
 
         // Passo 3: inicia a automação
         AutomacaoScheduler scheduler = new AutomacaoScheduler(
-                PASTA_ENTRADA,
-                PASTA_PROCESSADOS,
-                PASTA_TEMP,
-                NOME_IMPRESSORA
+                pastasEntrada,
+                pastaProcessados,
+                pastaTemp,
+                nomeImpressora
         );
 
         scheduler.iniciar();
 
-        // Mantém a JVM viva indefinidamente
+        // Mantém a JVM viva
         Runtime.getRuntime().addShutdownHook(new Thread(() ->
                 logger.info("Automação de despacho finalizada.")
         ));
     }
 
+    private static boolean carregarConfiguracoes() {
+        Properties prop = new Properties();
+        String fileName = "config.properties";
+
+        try {
+            // 1. Tenta carregar de um arquivo externo (na mesma pasta do JAR)
+            File externalFile = new File(fileName);
+            if (externalFile.exists()) {
+                logger.info("Carregando configurações externas de: {}", externalFile.getAbsolutePath());
+                try (InputStream input = new FileInputStream(externalFile)) {
+                    prop.load(input);
+                }
+            } else {
+                // 2. Fallback: Tenta carregar de dentro do JAR (recurso interno)
+                logger.info("Arquivo externo {} não encontrado. Usando configurações internas.", fileName);
+                try (InputStream input = Main.class.getClassLoader().getResourceAsStream(fileName)) {
+                    if (input == null) {
+                        logger.error("Arquivo {} não encontrado nem externamente nem internamente.", fileName);
+                        return false;
+                    }
+                    prop.load(input);
+                }
+            }
+
+            // Mapeamento das propriedades
+            String inputPaths = prop.getProperty("pastas.entrada", "");
+            if (!inputPaths.isEmpty()) {
+                pastasEntrada = Arrays.asList(inputPaths.split(","));
+            } else {
+                pastasEntrada = Collections.emptyList();
+            }
+
+            pastaProcessados = prop.getProperty("pasta.processados", "");
+            pastaTemp = prop.getProperty("pasta.temp", "");
+            nomeImpressora = prop.getProperty("impressora.nome", "");
+
+            return true;
+        } catch (Exception e) {
+            logger.error("Erro ao carregar propriedades: {}", e.getMessage());
+            return false;
+        }
+    }
+
     private static void criarPastas() {
-        new File(PASTA_ENTRADA).mkdirs();
-        new File(PASTA_PROCESSADOS).mkdirs();
-        new File(PASTA_TEMP).mkdirs();
+        if (pastasEntrada != null) {
+            for (String path : pastasEntrada) {
+                new File(path).mkdirs();
+            }
+        }
+        if (pastaProcessados != null && !pastaProcessados.isEmpty()) new File(pastaProcessados).mkdirs();
+        if (pastaTemp != null && !pastaTemp.isEmpty()) new File(pastaTemp).mkdirs();
         logger.info("Pastas verificadas/criadas.");
     }
 }

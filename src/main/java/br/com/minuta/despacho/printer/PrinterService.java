@@ -58,6 +58,10 @@ public class PrinterService {
         logger.info("[IMPRESSO] {} -> {}", pdfFile.getName(), impressora.getName());
     }
 
+    public boolean existeImpressora() {
+        return encontrarImpressora() != null;
+    }
+
     private PrintService encontrarImpressora() {
         PrintService[] services = PrintServiceLookup.lookupPrintServices(null, null);
         for (PrintService ps : services) {
