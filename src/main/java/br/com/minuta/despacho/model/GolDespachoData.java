@@ -19,6 +19,7 @@ public class GolDespachoData {
     public String qtdVolumes;
     public String peso;
     public String nfQde;
+    public String valorMercadoria;
     public boolean isAtacado;
 
     public static GolDespachoData fromCsvLine(String[] campos, boolean isAtacado) {
@@ -52,6 +53,11 @@ public class GolDespachoData {
             d.qtdVolumes = get(campos, 11);
             d.peso = get(campos, 12);
             d.nfQde = get(campos, 13);
+        }
+
+        // Se tiver uma coluna extra além da nota fiscal, é o valor da mercadoria
+        if (campos.length > 13) {
+            d.valorMercadoria = get(campos, campos.length - 1);
         }
 
         return d;

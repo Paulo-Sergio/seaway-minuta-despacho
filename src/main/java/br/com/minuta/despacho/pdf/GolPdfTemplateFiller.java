@@ -12,7 +12,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.InputStream;
+import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.util.Locale;
 
 public class GolPdfTemplateFiller {
 
@@ -86,14 +88,15 @@ public class GolPdfTemplateFiller {
 
         set(form, "Nº de Apolice", "");
         set(form, "Seguradora", "");
-        set(form, "Valor da Mercadoria", "");
+        set(form, "Valor da Mercadoria", formatarMoeda(d.valorMercadoria));
 
         // ── AUTORIZAÇÃO ────────────────────────────────────────────────────
         set(form, "Autorização", "Yes");
 
         // ── RESPONSÁVEL ────────────────────────────────────────────────────
         set(form, "Local/Data", "RECIFE, " + LocalDate.now());
-        set(form, "Nome/ Reponsável", "ALINE MELO");
+        String responsavel = d.isAtacado ? "ALINE MELO" : "GUSTAVO LOPES";
+        set(form, "Nome/ Reponsável", responsavel);
 
         form.flattenFields();
 
@@ -144,6 +147,20 @@ public class GolPdfTemplateFiller {
             }
         } catch (Exception e) {
             logger.error("Erro no campo '{}': {}", campo, e.getMessage());
+        }
+    }
+
+    private String formatarMoeda(String valor) {
+        if (valor == null || valor.trim().isEmpty()) {
+            return "";
+        }
+        try {
+            double v = Double.parseDouble(valor.replace(",", "."));
+            NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+            return nf.format(v);
+        } catch (Exception e) {
+            logger.warn("Erro ao formatar valor '{}' como moeda.", valor);
+            return valor;
         }
     }
 }
