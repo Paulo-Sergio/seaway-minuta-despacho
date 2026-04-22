@@ -1,13 +1,14 @@
 package br.com.minuta.despacho.printer;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.printing.PDFPageable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.print.*;
-import javax.print.attribute.*;
-import javax.print.attribute.standard.*;
+import javax.print.PrintService;
+import javax.print.PrintServiceLookup;
+import java.awt.print.PrinterJob;
 import java.io.File;
-import java.nio.file.Files;
 
 public class PrinterService {
 
@@ -37,23 +38,13 @@ public class PrinterService {
             );
         }
 
-        byte[] dados = Files.readAllBytes(pdfFile.toPath());
-
-        DocFlavor flavor = DocFlavor.BYTE_ARRAY.PDF;
-        if (!impressora.isDocFlavorSupported(flavor)) {
-            flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
+        // Usando PDFBox para imprimir de forma confiável (renderiza antes de enviar)
+        try (PDDocument document = PDDocument.load(pdfFile)) {
+            PrinterJob job = PrinterJob.getPrinterJob();
+            job.setPrintService(impressora);
+            job.setPageable(new PDFPageable(document));
+            job.print();
         }
-
-        Doc doc = new SimpleDoc(dados, flavor, null);
-
-        PrintRequestAttributeSet attrs = new HashPrintRequestAttributeSet();
-        attrs.add(new Copies(1));
-        attrs.add(Sides.ONE_SIDED);
-        attrs.add(OrientationRequested.PORTRAIT);
-        attrs.add(MediaSizeName.ISO_A4);
-
-        DocPrintJob job = impressora.createPrintJob();
-        job.print(doc, attrs);
 
         logger.info("[IMPRESSO] {} -> {}", pdfFile.getName(), impressora.getName());
     }

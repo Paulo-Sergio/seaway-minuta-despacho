@@ -37,6 +37,8 @@ public class AutomacaoScheduler {
 
         scheduler.scheduleAtFixedRate(() -> {
             try {
+                logger.info("--- Iniciando ciclo de verificação de pastas ---");
+                
                 for (String path : pastasEntrada) {
                     CsvReader csvReader = new CsvReader(path, pastaProcessados);
                     List<File> csvs = csvReader.buscarCsvs();
@@ -45,7 +47,7 @@ public class AutomacaoScheduler {
                         continue;
                     }
 
-                    logger.info("Verificando pasta: {}", path);
+                    logger.info("Pasta com arquivos encontrados: {}", path);
 
                     for (File csv : csvs) {
                         logger.info("Processando: {}", csv.getName());
@@ -69,7 +71,7 @@ public class AutomacaoScheduler {
                                 pdf.delete();
 
                             } catch (IllegalArgumentException e) {
-                                logger.error("Erro no CSV: {}", e.getMessage());
+                                logger.error("Erro nos dados do CSV para {}: {}", dados.destinatarioNome, e.getMessage());
                             } catch (Exception e) {
                                 todosOk = false;
                                 logger.error("Erro no PDF/Impressão: {}", e.getMessage(), e);
@@ -85,8 +87,8 @@ public class AutomacaoScheduler {
                     }
                 }
 
-            } catch (Exception e) {
-                logger.error("Erro geral: {}", e.getMessage(), e);
+            } catch (Throwable t) {
+                logger.error("ERRO CRÍTICO NO CICLO DE AUTOMAÇÃO: {}", t.getMessage(), t);
             }
 
         }, 0, 30, TimeUnit.SECONDS);

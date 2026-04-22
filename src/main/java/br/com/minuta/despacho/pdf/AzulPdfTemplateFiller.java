@@ -124,7 +124,7 @@ public class AzulPdfTemplateFiller {
 
         // ── VALOR DECLARADO ────────────────────────────────────────────────
         set(form, "Declaração Remessa Valor",
-                d.valorDeclarado == null || d.valorDeclarado.isBlank()
+                d.valorDeclarado == null || d.valorDeclarado.trim().isEmpty()
                         ? "Sem valor declarado"
                         : "R$ " + d.valorDeclarado);
 
@@ -187,7 +187,7 @@ public class AzulPdfTemplateFiller {
 
     private void marcarCheckbox(PdfAcroForm form, String valorCsv,
                                 String[] opcoes, String[] nomeCampos) {
-        if (valorCsv == null || valorCsv.isBlank()) return;
+        if (valorCsv == null || valorCsv.trim().isEmpty()) return;
         for (int i = 0; i < opcoes.length; i++) {
             if (valorCsv.toLowerCase().contains(opcoes[i].toLowerCase())) {
                 try {

@@ -53,7 +53,6 @@ public class Main {
 
         scheduler.iniciar();
 
-        // Mantém a JVM viva
         Runtime.getRuntime().addShutdownHook(new Thread(() ->
                 logger.info("Automação de despacho finalizada.")
         ));
