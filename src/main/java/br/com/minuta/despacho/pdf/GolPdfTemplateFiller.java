@@ -70,7 +70,9 @@ public class GolPdfTemplateFiller {
         // ── VOLUMES / CARGA ────────────────────────────────────────────────
         set(form, "Nº de Volumes", d.qtdVolumes);
         set(form, "Peso Total", d.peso);
-        set(form, "Medidas das Embalagens", "CAIXAS");
+
+        set(form, "Medidas das Embalagens", calcularMedidas(d));
+
         set(form, "Produto Predominante", "CONFECÇÕES");
         set(form, "Tipo de Embalagem", "CAIXA DE PAPELÃO");
 
@@ -87,7 +89,7 @@ public class GolPdfTemplateFiller {
         set(form, "Valor da Mercadoria", "");
 
         // ── AUTORIZAÇÃO ────────────────────────────────────────────────────
-        set(form, "Autorização", "Off");
+        set(form, "Autorização", "Yes");
 
         // ── RESPONSÁVEL ────────────────────────────────────────────────────
         set(form, "Local/Data", "RECIFE, " + LocalDate.now());
@@ -97,6 +99,32 @@ public class GolPdfTemplateFiller {
 
         pdf.close();
         return new File(saida);
+    }
+
+    private String calcularMedidas(GolDespachoData d) {
+        if (d.isAtacado) {
+            return "54C x 34L x 37A";
+        }
+
+        // Lógica para E-commerce baseada na quantidade de peças (volumes no CSV)
+        int qtd = 1;
+        try {
+            qtd = Integer.parseInt(d.qtdVolumes);
+        } catch (Exception e) {
+            logger.warn("Quantidade de volumes inválida para e-commerce: {}. Usando 1.", d.qtdVolumes);
+        }
+
+        if (qtd >= 4) {
+            return "18,5C x 21,5L x 14,5A";
+        }
+
+        switch (qtd) {
+            case 1:  return "18,5C x 8L x 8A";
+            case 2:  return "18,5C x 14,5L x 8A";
+            case 3:  return "18,5C x 21,5L x 8A";
+            default:
+                return "18,5C x 21,5L x 14,5A";
+        }
     }
 
     private void configurarMultiline(PdfAcroForm form, String nomeCampo) {

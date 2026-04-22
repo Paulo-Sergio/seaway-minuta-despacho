@@ -26,6 +26,10 @@ public class CsvReader {
     public List<GolDespachoData> lerCsv(File arquivo) throws IOException {
         List<GolDespachoData> lista = new ArrayList<>();
 
+        // Se o caminho da pasta de entrada termina com FAT\CSV ou FAT/CSV, é Atacado
+        String pathUpper = pastaEntrada.toUpperCase().replace("/", "\\");
+        boolean isAtacado = pathUpper.endsWith("FAT\\CSV");
+
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(new FileInputStream(arquivo), StandardCharsets.UTF_8))) {
 
@@ -44,7 +48,7 @@ public class CsvReader {
                 if (campos.length < 2) continue; // linha vazia ou inválida
 
                 // Automação GOL
-                lista.add(GolDespachoData.fromCsvLine(campos));
+                lista.add(GolDespachoData.fromCsvLine(campos, isAtacado));
             }
         }
         return lista;

@@ -19,9 +19,11 @@ public class GolDespachoData {
     public String qtdVolumes;
     public String peso;
     public String nfQde;
+    public boolean isAtacado;
 
-    public static GolDespachoData fromCsvLine(String[] campos) {
+    public static GolDespachoData fromCsvLine(String[] campos, boolean isAtacado) {
         GolDespachoData d = new GolDespachoData();
+        d.isAtacado = isAtacado;
 
         // Mapeamento baseado no layout da Minuta da Gol
         d.tipoEntrega = get(campos, 0); // Tipo de Entrega
