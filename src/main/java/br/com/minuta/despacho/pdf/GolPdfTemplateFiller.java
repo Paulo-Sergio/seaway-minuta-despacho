@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 public class GolPdfTemplateFiller {
@@ -94,7 +95,9 @@ public class GolPdfTemplateFiller {
         set(form, "Autorização", "Yes");
 
         // ── RESPONSÁVEL ────────────────────────────────────────────────────
-        set(form, "Local/Data", "RECIFE, " + LocalDate.now());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        set(form, "Local/Data", "RECIFE, " + LocalDate.now().format(formatter));
+
         String responsavel = d.isAtacado ? "ALINE MELO" : "GUSTAVO LOPES";
         set(form, "Nome/ Reponsável", responsavel);
 
