@@ -34,14 +34,14 @@ public class Main {
         // Passo 2: Validar impressora
         PrinterService printerService = new PrinterService(nomeImpressora);
         if (!printerService.existeImpressora()) {
-            logger.error("IMPRESSORA NÃO ENCONTRADA: [{}]", nomeImpressora);
-            logger.error("A automação não será iniciada sem uma impressora válida.");
-            logger.info("Verifique a lista de impressoras disponíveis abaixo e ajuste o config.properties:");
+            logger.error("Nenhuma impressora encontrada (nem a configurada '{}' nem a padrão do Windows).", nomeImpressora);
+            logger.error("A automação não será iniciada.");
+            logger.info("Verifique a lista de impressoras disponíveis abaixo:");
             PrinterService.listarImpressoras();
             return;
         }
 
-        logger.info("Impressora selecionada: [{}]", nomeImpressora);
+        logger.info("Impressora ativa: [{}]", printerService.getNomeImpressoraUtilizada());
 
         // Passo 3: inicia a automação
         AutomacaoScheduler scheduler = new AutomacaoScheduler(

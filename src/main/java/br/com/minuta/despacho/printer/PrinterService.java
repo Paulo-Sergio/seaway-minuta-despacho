@@ -21,9 +21,12 @@ public class PrinterService {
 
     public static void listarImpressoras() {
         PrintService[] services = PrintServiceLookup.lookupPrintServices(null, null);
+        PrintService defaultService = PrintServiceLookup.lookupDefaultPrintService();
+
         logger.info("=== Impressoras disponíveis ===");
         for (PrintService ps : services) {
-            logger.info("  -> {}", ps.getName());
+            String isDefault = (defaultService != null && ps.getName().equals(defaultService.getName())) ? " [DEFAULT]" : "";
+            logger.info("  -> {}{}", ps.getName(), isDefault);
         }
         logger.info("===============================");
     }
@@ -33,8 +36,8 @@ public class PrinterService {
 
         if (impressora == null) {
             throw new RuntimeException(
-                    "Impressora não encontrada: [" + nomeDaImpressora + "]. " +
-                            "Execute PrinterService.listarImpressoras() para ver os nomes disponíveis."
+                    "Nenhuma impressora encontrada. Configure 'impressora.nome' no config.properties " +
+                            "ou defina uma impressora padrão no Windows."
             );
         }
 
@@ -53,13 +56,27 @@ public class PrinterService {
         return encontrarImpressora() != null;
     }
 
+    public String getNomeImpressoraUtilizada() {
+        PrintService ps = encontrarImpressora();
+        return (ps != null) ? ps.getName() : "Nenhuma encontrada";
+    }
+
     private PrintService encontrarImpressora() {
+        // 1. Se não houver nome configurado, busca a padrão
+        if (nomeDaImpressora == null || nomeDaImpressora.trim().isEmpty() || nomeDaImpressora.equals("NOME_DA_IMPRESSORA_AQUI")) {
+            return PrintServiceLookup.lookupDefaultPrintService();
+        }
+
+        // 2. Tenta encontrar pelo nome exato
         PrintService[] services = PrintServiceLookup.lookupPrintServices(null, null);
         for (PrintService ps : services) {
             if (ps.getName().equalsIgnoreCase(nomeDaImpressora)) {
                 return ps;
             }
         }
-        return null;
+
+        // 3. Se não encontrou pelo nome, tenta a padrão como fallback
+        logger.warn("Impressora '{}' não encontrada. Tentando utilizar a impressora padrão do sistema.", nomeDaImpressora);
+        return PrintServiceLookup.lookupDefaultPrintService();
     }
 }
