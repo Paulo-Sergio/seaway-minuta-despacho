@@ -14,9 +14,11 @@ public class PrinterService {
 
     private static final Logger logger = LoggerFactory.getLogger(PrinterService.class);
     private final String nomeDaImpressora;
+    private final int copias;
 
-    public PrinterService(String nomeDaImpressora) {
+    public PrinterService(String nomeDaImpressora, int copias) {
         this.nomeDaImpressora = nomeDaImpressora;
+        this.copias = copias > 0 ? copias : 1;
     }
 
     public static void listarImpressoras() {
@@ -46,10 +48,11 @@ public class PrinterService {
             PrinterJob job = PrinterJob.getPrinterJob();
             job.setPrintService(impressora);
             job.setPageable(new PDFPageable(document));
+            job.setCopies(copias);
             job.print();
         }
 
-        logger.info("[IMPRESSO] {} -> {}", pdfFile.getName(), impressora.getName());
+        logger.info("[IMPRESSO] {} ({} vias) -> {}", pdfFile.getName(), copias, impressora.getName());
     }
 
     public boolean existeImpressora() {

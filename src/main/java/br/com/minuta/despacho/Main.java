@@ -20,6 +20,7 @@ public class Main {
     private static String pastaProcessados;
     private static String pastaTemp;
     private static String nomeImpressora;
+    private static int copias;
 
     public static void main(String[] args) {
         // Passo 0: carregar propriedades
@@ -32,7 +33,7 @@ public class Main {
         criarPastas();
 
         // Passo 2: Validar impressora
-        PrinterService printerService = new PrinterService(nomeImpressora);
+        PrinterService printerService = new PrinterService(nomeImpressora, copias);
         if (!printerService.existeImpressora()) {
             logger.error("Nenhuma impressora encontrada (nem a configurada '{}' nem a padrão do Windows).", nomeImpressora);
             logger.error("A automação não será iniciada.");
@@ -41,14 +42,15 @@ public class Main {
             return;
         }
 
-        logger.info("Impressora ativa: [{}]", printerService.getNomeImpressoraUtilizada());
+        logger.info("Impressora ativa: [{}] - Vias: {}", printerService.getNomeImpressoraUtilizada(), copias);
 
         // Passo 3: inicia a automação
         AutomacaoScheduler scheduler = new AutomacaoScheduler(
                 pastasEntrada,
                 pastaProcessados,
                 pastaTemp,
-                nomeImpressora
+                nomeImpressora,
+                copias
         );
 
         scheduler.iniciar();
@@ -93,6 +95,14 @@ public class Main {
             pastaProcessados = prop.getProperty("pasta.processados", "");
             pastaTemp = prop.getProperty("pasta.temp", "");
             nomeImpressora = prop.getProperty("impressora.nome", "");
+            
+            try {
+                copias = Integer.parseInt(prop.getProperty("impressora.copias", "1"));
+                if (copias <= 0) copias = 1;
+            } catch (NumberFormatException e) {
+                logger.warn("Número de cópias inválido no config.properties. Usando padrão: 1");
+                copias = 1;
+            }
 
             return true;
         } catch (Exception e) {

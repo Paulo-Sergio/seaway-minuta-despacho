@@ -25,11 +25,12 @@ public class AutomacaoScheduler {
     public AutomacaoScheduler(List<String> pastasEntrada,
                               String pastaProcessados,
                               String pastaTemp,
-                              String nomeDaImpressora) {
+                              String nomeDaImpressora,
+                              int copias) {
         this.pastasEntrada = pastasEntrada;
         this.pastaProcessados = pastaProcessados;
         this.pdfDispatcher = new PdfDispatcher(pastaTemp);
-        this.printerService = new PrinterService(nomeDaImpressora);
+        this.printerService = new PrinterService(nomeDaImpressora, copias);
     }
 
     public void iniciar() {
